@@ -28,6 +28,7 @@ function to_json(file) {
 }
 
 bluebird.coroutine(function*() {
+	let startTime = new Date().valueOf();
 	const db = yield dbPromise;
 	console.log('Data uploading to => ', dbURI);
 	let files = ['./radhe.xlsx'];
@@ -46,6 +47,7 @@ bluebird.coroutine(function*() {
 			.then( _ => {
 				if ( _ ) {
 					record.originDetails = _;
+					record.city = _.destinationBranchCity;
 					query = {
 						city: record.originDetails.destinationBranchCity,
 						pincode: record.destination,
@@ -60,22 +62,31 @@ bluebird.coroutine(function*() {
 			.then( _ => {
 				if ( _ ) {
 					record.TATData = _;
+					record.TAT = _.TAT;
+					console.log(JSON.stringify(record));
 				} else {
 					return Promise.reject('TAT not found.');
 				}
 			})
 			.catch(e => {
+				console.log(JSON.stringify(record));
 				record.reason = e.toString();
 				console.log(record.reason);
 			})
-		}, { concurrency: 1 })
+		}, { concurrency: 100})
 		.then( _ => {
-			let fileData = '"Origin Pincde","Service Type","Destination Pincode","TAT"\n';
+			let fileData = '"Origin Pincode","Service Type","Destination Pincode","TAT"\n';
 			data.forEach(record => {
 				fileData += record.origin + ',' + record.serviceType + ',' 
-				+ record.destination + ',' + record.TATData.TAT + '"' + record.reason + '"' + '\n';
+				+ record.destination + ',' + (record.TAT || '') + ',"' + (record.reason || '') + '"' + '\n';
 			});
-			fs.writeFile('./output.csv',fileData, _ => {
+			fs.writeFile('./output(' + new Date() + ').csv',fileData, (err, data) => {
+				if (err) {
+					console.log(err);
+				} else {
+					console.log('Script completed successfully');
+				}
+				console.log('Total Time Taken (in seconds) => ', (new Date().valueOf() - startTime) / 1000);
 				process.exit(0);
 			})
 		});
