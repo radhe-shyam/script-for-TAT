@@ -1,0 +1,24 @@
+{
+  "name": "script-for-tat",
+  "version": "1.0.0",
+  "description": "script to include TAT",
+  "main": "make.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/radhe-shyam/script-for-TAT.git"
+  },
+  "author": "jangir.radheyshyam@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/radhe-shyam/script-for-TAT/issues"
+  },
+  "homepage": "https://github.com/radhe-shyam/script-for-TAT#readme",
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "mongodb": "^2.2.28",
+    "xlsx": "^0.10.5"
+  }
+}
